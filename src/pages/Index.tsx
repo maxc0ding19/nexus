@@ -45,7 +45,13 @@ const Index = () => {
 
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.8fr)] lg:gap-6 xl:gap-8">
         <div className="space-y-7">
-          <RecoveryOverview entries={state.recoveryEntries} />
+          {state.preferences.recoveryWidgetDetail === "summary" && <RecoveryOverview entries={state.recoveryEntries} />}
+          {state.preferences.recoveryWidgetDetail === "status-only" && (
+            <Panel className="flex items-center justify-between p-5">
+              <div><SectionLabel>Recovery status</SectionLabel><p className="mt-2 text-sm font-medium text-[#dce0de]">Continue forward.</p></div>
+              <span className="rounded-full border border-[#55c98b]/20 bg-[#55c98b]/10 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[#72d69e]">Steady</span>
+            </Panel>
+          )}
           <PriorityList priorities={prioritiesToday} onToggle={togglePriority} />
           <ActionList actions={actionsToday} completedIds={completedActionIds} onToggle={toggleAction} />
         </div>

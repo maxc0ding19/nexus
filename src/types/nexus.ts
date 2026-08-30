@@ -74,6 +74,37 @@ export interface RecoveryEntry {
   note?: string;
 }
 
+export type RecoveryEventType = "urge" | "difficult" | "redirect" | "setback" | "custom";
+
+export interface RecoveryEvent {
+  id: string;
+  type: RecoveryEventType;
+  occurredAt: string;
+  contextId?: string;
+  customLabel?: string;
+}
+
+export interface RecoveryContext {
+  id: string;
+  eventId: string;
+  sleepQuality?: number;
+  sleepHours?: number;
+  stress?: number;
+  mood?: number;
+  energy?: number;
+  screenMinutes?: number;
+  exerciseMinutes?: number;
+  socialInteraction?: "none" | "some" | "significant";
+  alone?: boolean;
+  timeOfDay: "morning" | "afternoon" | "evening" | "night";
+  dayOfWeek: number;
+  generalContext?: string;
+  precedingActivity?: string;
+  helpfulResponse?: string;
+  notes?: string;
+  customFactors: Record<string, string | number | boolean>;
+}
+
 export interface JournalEntry {
   id: string;
   date: string;
@@ -125,6 +156,7 @@ export interface UserPreferences {
   reducedMotion: boolean;
   showDemoData: boolean;
   activeDashboardId: string;
+  recoveryWidgetDetail: "summary" | "status-only" | "hidden";
 }
 
 export interface NexusState {
@@ -134,6 +166,8 @@ export interface NexusState {
   completions: ActionCompletion[];
   priorities: DailyPriority[];
   recoveryEntries: RecoveryEntry[];
+  recoveryEvents: RecoveryEvent[];
+  recoveryContexts: RecoveryContext[];
   journalEntries: JournalEntry[];
   goals: Goal[];
   goalProgress: GoalProgress[];

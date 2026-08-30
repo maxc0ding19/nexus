@@ -36,6 +36,8 @@ export const createDemoState = (): NexusState => ({
     { id: "r-1", date: isoDate(-1), status: "steady", score: 76, factors: { sleepHours: 7.6, stress: 4, energy: 7, screenMinutes: 184 } },
     { id: "r-0", date: isoDate(), status: "steady", score: 78, factors: { sleepHours: 7.4, stress: 4, mood: 7, energy: 7, screenMinutes: 172 } },
   ],
+  recoveryEvents: [],
+  recoveryContexts: [],
   journalEntries: [],
   goals: [],
   goalProgress: [],
@@ -50,5 +52,5 @@ export const createDemoState = (): NexusState => ({
     { id: "widget-actions", dashboardId: "default", type: "actions", title: "Actions", size: "medium", order: 1, config: {} },
     { id: "widget-insight", dashboardId: "default", type: "insight", title: "System insight", size: "medium", order: 2, config: {} },
   ],
-  preferences: { name: "Alex", weekStartsOn: 1, reducedMotion: true, showDemoData: true, activeDashboardId: "default" },
+  preferences: { name: "Alex", weekStartsOn: 1, reducedMotion: true, showDemoData: true, activeDashboardId: "default", recoveryWidgetDetail: "summary" },
 });
