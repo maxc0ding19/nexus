@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils";
 interface Props {
   actions: ActionDefinition[];
   completedIds: Set<string>;
-  onToggle: (id: string) => void;
+  onAction: (action: ActionDefinition) => void;
   onAdd: (name: string) => void;
 }
 
-export function RecoveryActions({ actions, completedIds, onToggle, onAdd }: Props) {
+export function RecoveryActions({ actions, completedIds, onAction, onAdd }: Props) {
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState("");
   const save = () => { if (!name.trim()) return; onAdd(name); setName(""); setAdding(false); };
@@ -24,7 +24,7 @@ export function RecoveryActions({ actions, completedIds, onToggle, onAdd }: Prop
         <div className="divide-y divide-white/[0.055]">
           {actions.map((action) => {
             const done = completedIds.has(action.id);
-            return <button key={action.id} onClick={() => onToggle(action.id)} className="group flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-white/[0.02]"><span className={cn("flex h-7 w-7 items-center justify-center rounded-lg border", done ? "border-[#55c98b]/30 bg-[#55c98b]/12 text-[#61cf91]" : "border-white/[0.08] text-[#5e6668]")}><ShieldCheck className="h-3.5 w-3.5" /></span><span className={cn("flex-1 text-xs font-medium", done ? "text-[#667073] line-through" : "text-[#cbd0ce]")}>{action.name}</span><span className="font-mono text-[8px] uppercase tracking-[0.1em] text-[#525a5c]">{done ? "Complete" : action.type}</span></button>;
+            return <button key={action.id} onClick={() => onAction(action)} className="group flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-white/[0.02]"><span className={cn("flex h-7 w-7 items-center justify-center rounded-lg border", done ? "border-[#55c98b]/30 bg-[#55c98b]/12 text-[#61cf91]" : "border-white/[0.08] text-[#5e6668]")}><ShieldCheck className="h-3.5 w-3.5" /></span><span className={cn("flex-1 text-xs font-medium", done ? "text-[#667073] line-through" : "text-[#cbd0ce]")}>{action.name}</span><span className="font-mono text-[8px] uppercase tracking-[0.1em] text-[#525a5c]">{done ? "Complete" : action.type}</span></button>;
           })}
         </div>
       </Panel>

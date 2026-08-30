@@ -52,5 +52,5 @@ export const createDemoState = (): NexusState => ({
     { id: "widget-actions", dashboardId: "default", type: "actions", title: "Actions", size: "medium", order: 1, config: {} },
     { id: "widget-insight", dashboardId: "default", type: "insight", title: "System insight", size: "medium", order: 2, config: {} },
   ],
-  preferences: { name: "Alex", weekStartsOn: 1, reducedMotion: true, showDemoData: true, activeDashboardId: "default", recoveryWidgetDetail: "summary" },
+  preferences: { name: "Max", weekStartsOn: 1, reducedMotion: true, showDemoData: true, activeDashboardId: "default", recoveryWidgetDetail: "summary" },
 });

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Activity, ArrowDownToLine, LockKeyhole, Plus, RotateCcw, ShieldAlert, Sparkles } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ActionCompletionDrawer } from "@/components/actions/ActionCompletionDrawer";
 import { Panel, SectionLabel } from "@/components/nexus/Panel";
 import { RecoveryActions } from "@/components/recovery/RecoveryActions";
 import { RecoveryHistory } from "@/components/recovery/RecoveryHistory";
@@ -9,7 +10,7 @@ import { RecoveryLogDrawer } from "@/components/recovery/RecoveryLogDrawer";
 import { RecoveryTrend } from "@/components/recovery/RecoveryTrend";
 import { getRecoveryStats, recoveryEventMeta } from "@/components/recovery/recovery-utils";
 import { useNexus } from "@/hooks/use-nexus";
-import type { RecoveryEventType } from "@/types/nexus";
+import type { ActionDefinition, RecoveryEventType } from "@/types/nexus";
 import { cn } from "@/lib/utils";
 
 const quickEvents: { type: RecoveryEventType; icon: typeof Activity }[] = [
@@ -21,13 +22,19 @@ const quickEvents: { type: RecoveryEventType; icon: typeof Activity }[] = [
 ];
 
 export default function Recovery() {
-  const { state, recoveryActions, completedActionIds, addRecoveryEvent, addRecoveryAction, toggleAction, setRecoveryWidgetDetail } = useNexus();
+  const { state, recoveryActions, completedActionIds, addRecoveryEvent, addRecoveryAction, toggleAction, completeAction, setRecoveryWidgetDetail } = useNexus();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [completionOpen, setCompletionOpen] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<ActionDefinition | undefined>();
   const [initialType, setInitialType] = useState<RecoveryEventType>("urge");
   const stats = getRecoveryStats(state.recoveryEvents);
   const hasData = state.recoveryEvents.length > 0;
   const recentDifficulty = stats.recent.filter((event) => event.type === "urge" || event.type === "difficult" || event.type === "setback").length;
   const log = (type: RecoveryEventType = "urge") => { setInitialType(type); setDrawerOpen(true); };
+  const actOn = (action: ActionDefinition) => {
+    if (action.type === "boolean" || action.type === "avoidance") toggleAction(action.id);
+    else { setSelectedAction(action); setCompletionOpen(true); }
+  };
 
   return (
     <div className="animate-[enter_380ms_ease-out_both]">
@@ -75,7 +82,7 @@ export default function Recovery() {
           <RecoveryInsight events={state.recoveryEvents} contexts={state.recoveryContexts} />
           <div className="grid gap-7 xl:grid-cols-[1.15fr_0.85fr]">
             <RecoveryHistory events={state.recoveryEvents} contexts={state.recoveryContexts} limit={4} />
-            <RecoveryActions actions={recoveryActions} completedIds={completedActionIds} onToggle={toggleAction} onAdd={addRecoveryAction} />
+            <RecoveryActions actions={recoveryActions} completedIds={completedActionIds} onAction={actOn} onAdd={addRecoveryAction} />
           </div>
         </TabsContent>
 
@@ -99,6 +106,7 @@ export default function Recovery() {
       </Tabs>
 
       <RecoveryLogDrawer open={drawerOpen} onOpenChange={setDrawerOpen} onSave={addRecoveryEvent} initialType={initialType} />
+      <ActionCompletionDrawer open={completionOpen} onOpenChange={setCompletionOpen} action={selectedAction} onComplete={completeAction} />
     </div>
   );
 }

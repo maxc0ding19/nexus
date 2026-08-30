@@ -9,12 +9,31 @@ export type ActionType =
   | "event";
 
 export type StatusTone = "positive" | "warning" | "negative" | "info" | "neutral";
+export type CustomFieldType = "text" | "number" | "boolean" | "scale" | "datetime" | "dropdown" | "multiselect";
+export type ActionPriority = "low" | "normal" | "high";
+
+export interface CustomFieldDefinition {
+  id: string;
+  name: string;
+  type: CustomFieldType;
+  required: boolean;
+  options?: string[];
+}
+
+export interface ActionSchedule {
+  mode: "daily" | "weekdays" | "weekly_target" | "custom";
+  weekdays?: number[];
+  weeklyTarget?: number;
+  intervalDays?: number;
+  startDate?: string;
+}
 
 export interface Category {
   id: string;
   name: string;
   icon: string;
   color?: string;
+  order?: number;
   archived: boolean;
 }
 
@@ -22,19 +41,26 @@ export interface ActionDefinition {
   id: string;
   name: string;
   description?: string;
+  icon?: string;
   type: ActionType;
   categoryId: string;
   schedule: string[];
+  scheduleConfig?: ActionSchedule;
   target?: number;
   unit?: string;
   reminder?: string;
   notes?: string;
+  priority?: ActionPriority;
   customFields: Record<string, string | number | boolean>;
+  customFieldDefinitions?: CustomFieldDefinition[];
   includeInAnalytics: boolean;
   includeInRecovery: boolean;
   classification: "positive" | "negative" | "neutral";
   color?: string;
+  active?: boolean;
   archived: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ActionCompletion {
@@ -43,6 +69,10 @@ export interface ActionCompletion {
   date: string;
   value: boolean | number | string;
   completedAt?: string;
+  customFieldValues?: Record<string, string | number | boolean | string[]>;
+  actionTypeSnapshot?: ActionType;
+  targetSnapshot?: number;
+  unitSnapshot?: string;
 }
 
 export interface DailyPriority {

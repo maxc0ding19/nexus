@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AppShell } from "@/components/nexus/AppShell";
 import { ModulePage } from "@/components/nexus/ModulePage";
+import ActionDetail from "@/pages/ActionDetail";
+import Actions from "@/pages/Actions";
 import Index from "@/pages/Index";
 import More from "@/pages/More";
 import Recovery from "@/pages/Recovery";
@@ -23,7 +25,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/recovery" element={<Recovery />} />
             <Route path="/analytics" element={<ModulePage label="Analysis layer" title="Analytics" description="Purposeful trends and comparisons designed to answer clear questions about your behavior." />} />
-            <Route path="/actions" element={<ModulePage label="Action system" title="Actions" description="The extensible library for daily actions, boundaries, check-ins, quantities, and custom events." />} />
+            <Route path="/actions" element={<Actions />} />
+            <Route path="/actions/:actionId" element={<ActionDetail />} />
             <Route path="/more" element={<More />} />
           </Route>
           <Route path="*" element={<NotFound />} />

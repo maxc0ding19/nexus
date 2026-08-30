@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { ArrowRight, Check, ShieldCheck } from "lucide-react";
+import { ActionCompletionDrawer } from "@/components/actions/ActionCompletionDrawer";
 import { ActionList } from "@/components/nexus/ActionList";
 import { Panel, SectionLabel } from "@/components/nexus/Panel";
 import { PriorityList } from "@/components/nexus/PriorityList";
 import { RecoveryOverview } from "@/components/nexus/RecoveryOverview";
 import { SystemSummary } from "@/components/nexus/SystemSummary";
 import { useNexus } from "@/hooks/use-nexus";
+import type { ActionDefinition } from "@/types/nexus";
 
 const greeting = () => {
   const hour = new Date().getHours();
@@ -14,11 +17,17 @@ const greeting = () => {
 };
 
 const Index = () => {
-  const { state, actionsToday, completedActionIds, prioritiesToday, toggleAction, togglePriority } = useNexus();
+  const { state, actionsToday, completedActionIds, prioritiesToday, toggleAction, completeAction, togglePriority } = useNexus();
+  const [selectedAction, setSelectedAction] = useState<ActionDefinition | undefined>();
+  const [completionOpen, setCompletionOpen] = useState(false);
   const nextAction = actionsToday.find((action) => !completedActionIds.has(action.id));
   const completedCount = actionsToday.filter((action) => completedActionIds.has(action.id)).length;
   const completion = actionsToday.length ? Math.round((completedCount / actionsToday.length) * 100) : 0;
   const dateLabel = new Intl.DateTimeFormat("en", { weekday: "long", month: "long", day: "numeric" }).format(new Date());
+  const actOn = (action: ActionDefinition) => {
+    if (action.type === "boolean" || action.type === "avoidance") toggleAction(action.id);
+    else { setSelectedAction(action); setCompletionOpen(true); }
+  };
 
   return (
     <div className="animate-[enter_380ms_ease-out_both]">
@@ -53,7 +62,7 @@ const Index = () => {
             </Panel>
           )}
           <PriorityList priorities={prioritiesToday} onToggle={togglePriority} />
-          <ActionList actions={actionsToday} completedIds={completedActionIds} onToggle={toggleAction} />
+          <ActionList actions={actionsToday} completedIds={completedActionIds} onAction={actOn} />
         </div>
 
         <aside className="space-y-7">
@@ -61,7 +70,7 @@ const Index = () => {
             <SectionLabel>Next action</SectionLabel>
             <Panel className="mt-3 overflow-hidden border-[#55c98b]/15 bg-[#121714]">
               {nextAction ? (
-                <button onClick={() => toggleAction(nextAction.id)} className="group w-full p-5 text-left sm:p-6">
+                <button onClick={() => actOn(nextAction)} className="group w-full p-5 text-left sm:p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#55c98b]/20 bg-[#55c98b]/10 text-[#65d394]"><ShieldCheck className="h-[18px] w-[18px]" /></div>
                     <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#55c98b]">Ready now</span>
@@ -85,6 +94,7 @@ const Index = () => {
           <SystemSummary metrics={state.metrics} />
         </aside>
       </div>
+      <ActionCompletionDrawer open={completionOpen} onOpenChange={setCompletionOpen} action={selectedAction} onComplete={completeAction} />
     </div>
   );
 };
